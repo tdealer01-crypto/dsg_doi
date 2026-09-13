@@ -8,16 +8,16 @@ A small enterprise-agent pattern that combines Terminal 3 authenticated identity
 
 ## Why this is useful
 
-Enterprise teams often want agent autonomy but still need clear boundaries around what the agent is doing, who reviewed it, and what evidence is retained. This project keeps those checks visible and maintainable instead of hiding them in an opaque prompt.
+Enterprise teams often want agent autonomy but still need clear boundaries around what the agent is doing, who reviewed it, whether a fallback exists, and what evidence is retained. This project keeps those checks visible and maintainable instead of hiding them in an opaque prompt.
 
 ## Terminal 3 integration
 
-- SDK: `@terminal3/t3n-sdk` (installed from the current npm `latest` tag in CI)
-- Environment: `sandbox`, aligned with the current Terminal 3 Agent Developer Kit sandbox page
+- SDK: `@terminal3/t3n-sdk` (current npm `latest`; local lock resolved `5.15.2`)
+- SDK environment: `testnet`, matching the current official Terminal 3 Quickstart
 - Authentication: `handshake()` + `authenticate(createEthAuthInput(...))`
-- Usage proof: `getUsage()` is wired to return the available sandbox-credit balance after authentication
+- Usage proof: `getUsage()` is wired to report the available test-credit balance after authentication
 - Claimed DID: `did:t3n:52792383fdfe132a31b9b34d1ff57675ee890ddc`
-- Onboarding evidence: Terminal 3 confirmed the DID was created and sandbox tokens/credits were generated.
+- Onboarding evidence: Terminal 3 confirmed the DID was created and sandbox/test credits were generated.
 
 ## Public repository
 
@@ -25,39 +25,42 @@ https://github.com/tdealer01-crypto/dsg_doi/tree/main/t3n-governed-agent
 
 ## Verified validation evidence
 
-GitHub Actions run: https://github.com/tdealer01-crypto/dsg_doi/actions/runs/34738519638
+Latest successful GitHub Actions run:
+https://github.com/tdealer01-crypto/dsg_doi/actions/runs/34739621451
 
-Commit: `47463cd93e880790c18fce1afc2f23148ac2e3ee`
+Verified commit: `8cf2e3f74058c3da7223708d7dce94fd6c0c3415`
 
 Verified on GitHub-hosted Ubuntu / Node 22:
 
-- `npm install` — PASS, 0 reported vulnerabilities
-- `npx tsc --noEmit` — PASS under strict TypeScript settings
-- `npm run check` — PASS
+- dependency installation — PASS
+- strict TypeScript compile — PASS
+- deterministic readiness checks — PASS
 - positive readiness case returns `GO`
 - incomplete-review case returns `REVIEW` and identifies the missing check
 
-## Live validation still required
+## Live validation status
 
-The DID is claimed, but the sandbox credential must be supplied only through `T3N_API_KEY` at runtime. The Termux runner is online again; the remaining blocker is that the API key is not yet stored on the device. After the key is entered locally, run the live entrypoint and record only non-secret outputs: authenticated DID, available sandbox credits, timestamp, SDK version, and screenshot/evidence. Never commit or print the API key.
+The DID and local credential are prepared. The first Termux live attempt did not reach T3N authentication because the local `tsx` launcher used a `#!/usr/bin/env node` shebang and Termux does not provide `/usr/bin/env`. The project scripts were changed to invoke the launcher through Node directly. A non-secret local diagnostic now reaches the expected `T3N_API_KEY is required` boundary, proving the TypeScript entrypoint loads correctly on the Android/Termux runner.
+
+The final live rerun will record only non-secret outputs: authenticated DID, available test credits, timestamp, SDK version, readiness result, and screenshots. The API key is never committed or printed.
 
 ## Bugs / friction found
 
-### 1. Environment-name drift across examples
+### 1. Sandbox terminology vs SDK environment name
 
-Older/reference T3N examples use `setEnvironment("testnet")`, while the current Terminal 3 Agent Developer Kit sandbox page instructs developers to use `setEnvironment("sandbox")`. The project now follows the current sandbox page and records the distinction because it can confuse builders following older material.
+The product page describes the developer environment as the T3N sandbox, while the current official SDK Quickstart uses `setEnvironment("testnet")` and documents `testnet | production`. This is understandable product terminology, but it can cause builders to assume `sandbox` is the SDK environment value. This project follows the Quickstart and uses `testnet`.
 
-### 2. Current quickstart snippet omits a field required by the installed SDK type
+### 2. Current Quickstart snippet omits a field required by the installed SDK type
 
-The current sandbox page shows `new T3nClient({ wasmComponent, handlers })`. With the current npm `latest` package, strict TypeScript compilation reports that `T3nClientConfig` requires `trustAnchor`.
+The current Quickstart constructs `new T3nClient({ wasmComponent, handlers })`. With `@terminal3/t3n-sdk` 5.15.2, strict TypeScript compilation reports that `T3nClientConfig` requires `trustAnchor`.
 
 Reproduction from CI before the fix:
 
 ```text
-src/index.ts(...): error TS2741: Property 'trustAnchor' is missing ... but required in type 'T3nClientConfig'.
+error TS2741: Property 'trustAnchor' is missing ... but required in type 'T3nClientConfig'.
 ```
 
-For sandbox validation this project makes the test-only choice explicit:
+For testnet validation this project makes the test-only choice explicit:
 
 ```ts
 const trustAnchor = { unsafe_trust_server: true } as const;
@@ -65,9 +68,19 @@ const trustAnchor = { unsafe_trust_server: true } as const;
 
 and passes it to `T3nClient`. This is deliberately visible rather than silently weakening trust behavior.
 
-### 3. Node typings are not implied by the minimal TypeScript setup
+### 3. Node typings in a minimal strict TypeScript project
 
-The first strict compile also failed on `process` until `@types/node` and `types: ["node"]` were added. This is minor, but including it in a minimal quickstart would make copy/paste TypeScript projects work more reliably.
+The first strict compile failed on `process` until `@types/node` and `types: ["node"]` were added. Including those in a minimal TypeScript quickstart would make copy/paste projects more reliable.
+
+### 4. Termux launcher portability
+
+On Android/Termux, the installed `tsx` launcher is executable but its `#!/usr/bin/env node` shebang cannot resolve because `/usr/bin/env` does not exist in the Termux filesystem. Calling the launcher with Node directly works:
+
+```text
+node node_modules/.bin/tsx src/index.ts
+```
+
+The package scripts now use that form, which still passes CI on GitHub-hosted Linux.
 
 ## Maintenance / handover
 
@@ -75,4 +88,4 @@ The implementation is intentionally small: one T3N entrypoint, a deterministic r
 
 ## Current status
 
-**DID_CLAIMED / STATIC_VERIFIED / LIVE_AUTH_PENDING** — the DID is confirmed and source, dependencies, strict type-check, and deterministic positive/negative checks pass in CI. Live Terminal 3 authentication remains the only required validation step before submission is described as end-to-end complete.
+**DID_CLAIMED / STATIC_VERIFIED / LIVE_AUTH_RERUN_REQUIRED** — identity onboarding is confirmed, CI is green, and the Termux runner issue is diagnosed and fixed. The remaining step is one live authenticated testnet run and evidence capture before the submission is described as end-to-end complete.
