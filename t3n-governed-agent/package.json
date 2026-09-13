@@ -1,0 +1,17 @@
+{
+  "name": "t3n-governed-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "check": "tsx src/check.ts"
+  },
+  "dependencies": {
+    "@terminal3/t3n-sdk": "latest"
+  },
+  "devDependencies": {
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
