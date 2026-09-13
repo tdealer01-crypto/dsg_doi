@@ -81,11 +81,11 @@ For testnet validation this project makes the test-only choice explicit:
 const trustAnchor = { unsafe_trust_server: true } as const;
 ```
 
-and passes it to `T3nClient`. This is deliberately visible rather than silently weakening trust behavior.
+and passes it to `T3nClient`.
 
 ### 3. Node typings in a minimal strict TypeScript project
 
-The first strict compile failed on `process` until `@types/node` and `types: ["node"]` were added. Including those in a minimal TypeScript quickstart would make copy/paste projects more reliable.
+The first strict compile failed on `process` until `@types/node` and `types: ["node"]` were added.
 
 ### 4. Termux launcher portability
 
@@ -99,8 +99,16 @@ The package scripts now use that form, which still passes CI on GitHub-hosted Li
 
 ## Maintenance / handover
 
-The implementation is intentionally small: one T3N entrypoint, a deterministic readiness module, a sanity-check script, strict TypeScript config, and GitHub Actions verification. It can be maintained as a standalone example or handed over with reproducible CI evidence.
+The implementation is intentionally small: one T3N entrypoint, a deterministic readiness module, a sanity-check script, strict TypeScript config, and GitHub Actions verification. I would like to continue running and maintaining the agent myself, while keeping a clean handover path available to Terminal 3 if they want to distribute or host it.
+
+## Superteam submission
+
+- Submission date: 2026-09-13
+- Listing: T3N Agent Build Challenge
+- Submission document: https://docs.google.com/document/d/1R28RF1JFAAEzHHoCNqznlRDle_LlZwIM3bXoJnIpd60/edit?usp=drivesdk
+- Confirmation observed: `Submission Received!`
+- Confirmation observed: `Submission created successfully`
 
 ## Current status
 
-**LIVE_VERIFIED / END_TO_END_COMPLETE** — identity onboarding is confirmed, CI is green, the Android/Termux portability issue is fixed, Terminal 3 authentication succeeded on testnet, the verified DID matches onboarding, available test credits were read, and the readiness gate returned `GO`.
+**SUBMITTED / LIVE_VERIFIED / END_TO_END_COMPLETE** — identity onboarding is confirmed, CI is green, the Android/Termux portability issue is fixed, Terminal 3 authentication succeeded on testnet, the verified DID matches onboarding, available test credits were read, the readiness gate returned `GO`, and Superteam confirmed the submission was created successfully.
