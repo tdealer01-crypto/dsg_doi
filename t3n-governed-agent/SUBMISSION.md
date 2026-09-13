@@ -13,7 +13,7 @@ Enterprise teams often want agent autonomy but still need clear boundaries aroun
 ## Terminal 3 integration
 
 - SDK: `@terminal3/t3n-sdk`
-- Environment: testnet while validating
+- Environment: **PENDING LIVE VERIFICATION** because the current docs disagree on the environment name
 - Authentication: official handshake + authenticate flow
 - Tenant DID: **PENDING LIVE RUN**
 - Agent DID / delegated capability: **PENDING LIVE RUN**
@@ -26,7 +26,7 @@ https://github.com/tdealer01-crypto/dsg_doi/tree/main/t3n-governed-agent
 
 ### Positive path
 
-**PENDING** — run after obtaining the T3N test credential. Record the exact command, returned DID, timestamp, and screenshot.
+**PENDING** — run after obtaining the T3N sandbox credential. Record the exact command, returned DID, timestamp, environment value, and screenshot.
 
 ### Review-required path
 
@@ -34,8 +34,15 @@ https://github.com/tdealer01-crypto/dsg_doi/tree/main/t3n-governed-agent
 
 ## Bugs / friction found
 
-- **PENDING LIVE RUN**
-- If the SDK hits a WASM/bundler issue, reproduce first with the plain Node/tsx entrypoint before changing framework configuration.
+### Documentation environment mismatch
+
+The current Terminal 3 ADK Quickstart says to call `setEnvironment("testnet")` and explains that the SDK accepts `testnet | production`. The current Terminal 3 Agent Developer Kit sandbox/claim page shows `setEnvironment("sandbox")` in its example. These two official surfaces therefore give different environment values for the same starter flow.
+
+Planned verification: run the smallest plain Node/tsx authentication example against the credential issued by the current claim page, record which environment value actually works, and report the exact SDK/package version with the result.
+
+### Bundler guidance
+
+If the SDK hits a WASM/bundler issue, reproduce first with the plain Node/tsx entrypoint before changing framework configuration, matching the official quickstart guidance.
 
 ## Maintenance / handover
 
