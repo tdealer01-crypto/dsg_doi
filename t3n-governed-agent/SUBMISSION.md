@@ -16,7 +16,8 @@ Enterprise teams often want agent autonomy but still need clear boundaries aroun
 - Environment: `sandbox`, aligned with the current Terminal 3 Agent Developer Kit sandbox page
 - Authentication: `handshake()` + `authenticate(createEthAuthInput(...))`
 - Usage proof: `getUsage()` is wired to return the available sandbox-credit balance after authentication
-- Tenant DID: **PENDING LIVE RUN**
+- Claimed DID: `did:t3n:52792383fdfe132a31b9b34d1ff57675ee890ddc`
+- Onboarding evidence: Terminal 3 confirmed the DID was created and sandbox tokens/credits were generated.
 
 ## Public repository
 
@@ -38,7 +39,7 @@ Verified on GitHub-hosted Ubuntu / Node 22:
 
 ## Live validation still required
 
-The sandbox credential must be supplied only through `T3N_API_KEY` at runtime. After the Termux runner is reachable again, run the live entrypoint and record only non-secret outputs: authenticated DID, available sandbox credits, timestamp, SDK version, and screenshot/evidence. Never commit or print the API key.
+The DID is claimed, but the sandbox credential must be supplied only through `T3N_API_KEY` at runtime. The Termux runner is online again; the remaining blocker is that the API key is not yet stored on the device. After the key is entered locally, run the live entrypoint and record only non-secret outputs: authenticated DID, available sandbox credits, timestamp, SDK version, and screenshot/evidence. Never commit or print the API key.
 
 ## Bugs / friction found
 
@@ -74,4 +75,4 @@ The implementation is intentionally small: one T3N entrypoint, a deterministic r
 
 ## Current status
 
-**STATIC_VERIFIED / LIVE_PENDING** — source, dependencies, strict type-check, and deterministic positive/negative checks pass in CI. Live Terminal 3 authentication remains the only required validation step before submission is described as end-to-end complete.
+**DID_CLAIMED / STATIC_VERIFIED / LIVE_AUTH_PENDING** — the DID is confirmed and source, dependencies, strict type-check, and deterministic positive/negative checks pass in CI. Live Terminal 3 authentication remains the only required validation step before submission is described as end-to-end complete.
