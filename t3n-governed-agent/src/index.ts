@@ -8,7 +8,7 @@ import {
 } from "@terminal3/t3n-sdk";
 import { evaluateReadiness } from "./readiness.js";
 
-setEnvironment("sandbox");
+setEnvironment("testnet");
 
 const readiness = evaluateReadiness({
   scopeClear: true,
@@ -41,7 +41,7 @@ const usage = await client.getUsage();
 
 console.log(JSON.stringify({
   connected: true,
-  environment: "sandbox",
+  environment: "testnet",
   tenantDid: auth.value,
   creditsAvailable: usage.balance.available,
   readiness,
