@@ -1,0 +1,26 @@
+name: T3N Governed Agent
+
+on:
+  push:
+    paths:
+      - 't3n-governed-agent/**'
+      - '.github/workflows/t3n-governed-agent.yml'
+  pull_request:
+    paths:
+      - 't3n-governed-agent/**'
+      - '.github/workflows/t3n-governed-agent.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: t3n-governed-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx tsc --noEmit
+      - run: npm run check
