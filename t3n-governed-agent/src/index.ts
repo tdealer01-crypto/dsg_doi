@@ -28,9 +28,11 @@ if (!apiKey) throw new Error("T3N_API_KEY is required");
 
 const wasmComponent = await loadWasmComponent();
 const address = eth_get_address(apiKey);
+const trustAnchor = { unsafe_trust_server: true } as const;
 const client = new T3nClient({
   wasmComponent,
   handlers: { EthSign: metamask_sign(address, undefined, apiKey) },
+  trustAnchor,
 });
 
 await client.handshake();
