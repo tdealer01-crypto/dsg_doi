@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "check": "tsx src/check.ts"
+    "check": "tsx src/check.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@terminal3/t3n-sdk": "latest"
   },
   "devDependencies": {
+    "@types/node": "latest",
     "tsx": "latest",
     "typescript": "latest"
   }
