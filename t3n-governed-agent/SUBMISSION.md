@@ -1,4 +1,4 @@
-# T3N Agent Build Challenge — Submission Draft
+# T3N Agent Build Challenge — Submission
 
 ## Project
 
@@ -15,15 +15,15 @@ Enterprise teams often want agent autonomy but still need clear boundaries aroun
 - SDK: `@terminal3/t3n-sdk` (current npm `latest`; local lock resolved `5.15.2`)
 - SDK environment: `testnet`, matching the current official Terminal 3 Quickstart
 - Authentication: `handshake()` + `authenticate(createEthAuthInput(...))`
-- Usage proof: `getUsage()` is wired to report the available test-credit balance after authentication
-- Claimed DID: `did:t3n:52792383fdfe132a31b9b34d1ff57675ee890ddc`
-- Onboarding evidence: Terminal 3 confirmed the DID was created and sandbox/test credits were generated.
+- Usage proof: `getUsage()` reports the available test-credit balance after authentication
+- Verified DID: `did:t3n:52792383fdfe132a31b9b34d1ff57675ee890ddc`
+- Terminal 3 onboarding confirmed the DID and test credits were created.
 
 ## Public repository
 
 https://github.com/tdealer01-crypto/dsg_doi/tree/main/t3n-governed-agent
 
-## Verified validation evidence
+## Verified CI evidence
 
 Latest successful GitHub Actions run:
 https://github.com/tdealer01-crypto/dsg_doi/actions/runs/34739621451
@@ -38,17 +38,32 @@ Verified on GitHub-hosted Ubuntu / Node 22:
 - positive readiness case returns `GO`
 - incomplete-review case returns `REVIEW` and identifies the missing check
 
-## Live validation status
+## Live testnet evidence
 
-The DID and local credential are prepared. The first Termux live attempt did not reach T3N authentication because the local `tsx` launcher used a `#!/usr/bin/env node` shebang and Termux does not provide `/usr/bin/env`. The project scripts were changed to invoke the launcher through Node directly. A non-secret local diagnostic now reaches the expected `T3N_API_KEY is required` boundary, proving the TypeScript entrypoint loads correctly on the Android/Termux runner.
+The final Android/Termux live run completed successfully after syncing the latest source and loading the T3N credential only from the local device.
 
-The final live rerun will record only non-secret outputs: authenticated DID, available test credits, timestamp, SDK version, readiness result, and screenshots. The API key is never committed or printed.
+Observed non-secret result:
+
+```json
+{
+  "connected": true,
+  "environment": "testnet",
+  "tenantDid": "did:t3n:52792383fdfe132a31b9b34d1ff57675ee890ddc",
+  "creditsAvailable": 20000000000,
+  "readiness": {
+    "status": "GO",
+    "missing": []
+  }
+}
+```
+
+This proves the end-to-end path reached Terminal 3 successfully, authenticated as the claimed DID, read the available test-credit balance, and passed the deterministic readiness gate. The API key was not committed or printed.
 
 ## Bugs / friction found
 
 ### 1. Sandbox terminology vs SDK environment name
 
-The product page describes the developer environment as the T3N sandbox, while the current official SDK Quickstart uses `setEnvironment("testnet")` and documents `testnet | production`. This is understandable product terminology, but it can cause builders to assume `sandbox` is the SDK environment value. This project follows the Quickstart and uses `testnet`.
+The product page describes the developer environment as the T3N sandbox, while the current official SDK Quickstart uses `setEnvironment("testnet")` and documents `testnet | production`. This can cause builders to assume `sandbox` is the SDK environment value. This project follows the Quickstart and uses `testnet`.
 
 ### 2. Current Quickstart snippet omits a field required by the installed SDK type
 
@@ -88,4 +103,4 @@ The implementation is intentionally small: one T3N entrypoint, a deterministic r
 
 ## Current status
 
-**DID_CLAIMED / STATIC_VERIFIED / LIVE_AUTH_RERUN_REQUIRED** — identity onboarding is confirmed, CI is green, and the Termux runner issue is diagnosed and fixed. The remaining step is one live authenticated testnet run and evidence capture before the submission is described as end-to-end complete.
+**LIVE_VERIFIED / END_TO_END_COMPLETE** — identity onboarding is confirmed, CI is green, the Android/Termux portability issue is fixed, Terminal 3 authentication succeeded on testnet, the verified DID matches onboarding, available test credits were read, and the readiness gate returned `GO`.
