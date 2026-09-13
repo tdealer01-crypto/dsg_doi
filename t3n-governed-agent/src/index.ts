@@ -6,8 +6,22 @@ import {
   metamask_sign,
   createEthAuthInput,
 } from "@terminal3/t3n-sdk";
+import { evaluateReadiness } from "./readiness.js";
 
-setEnvironment("testnet");
+setEnvironment("sandbox");
+
+const readiness = evaluateReadiness({
+  scopeClear: true,
+  ownerKnown: true,
+  reviewed: true,
+  fallbackReady: true,
+  evidenceReady: true,
+});
+
+if (readiness.status !== "GO") {
+  console.log(JSON.stringify({ connected: false, readiness }, null, 2));
+  process.exit(2);
+}
 
 const apiKey = process.env.T3N_API_KEY;
 if (!apiKey) throw new Error("T3N_API_KEY is required");
@@ -20,5 +34,13 @@ const client = new T3nClient({
 });
 
 await client.handshake();
-const result = await client.authenticate(createEthAuthInput(address));
-console.log(JSON.stringify({ connected: true, tenantDid: result.value }, null, 2));
+const auth = await client.authenticate(createEthAuthInput(address));
+const usage = await client.getUsage();
+
+console.log(JSON.stringify({
+  connected: true,
+  environment: "sandbox",
+  tenantDid: auth.value,
+  creditsAvailable: usage.balance.available,
+  readiness,
+}, null, 2));
