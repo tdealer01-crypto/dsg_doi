@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "check": "tsx src/check.ts",
-    "typecheck": "tsc --noEmit"
+    "start": "node node_modules/.bin/tsx src/index.ts",
+    "check": "node node_modules/.bin/tsx src/check.ts",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit"
   },
   "dependencies": {
     "@terminal3/t3n-sdk": "latest"
